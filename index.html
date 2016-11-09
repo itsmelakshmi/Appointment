@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <script data-require="angular.js@1.5.8" data-semver="1.5.8" src="https://code.angularjs.org/1.5.8/angular.js"></script>
+    <script src="//angular-ui.github.io/bootstrap/ui-bootstrap-tpls-2.2.0.js"></script>
+    <script src="script.js"></script>
+    
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="container" ng-app="scheduleApp" ng-controller="scheduleController as scheduleCtrl">
+      <!-- Modal content start -->
+      <script type="text/ng-template" id="timeSlotSummaryPopup.html">
+        <form name="appointmentForm" novalidate>
+          <div>
+            <div class="modal-header">
+              <h3 class="modal-title" id="modal-title">Appointment Info</h3>
+            </div>
+            <div class="modal-body" id="modal-body">
+              <div>
+                On <label>{{timeSlotPopUpCtrl.selected.appointment.name}}</label> At <label class="form-control-static">{{timeSlotPopUpCtrl.selected.slot.time}}</p>
+              </div>
+              <p class="form-group">
+                <label>Name</label>
+                <input type="text" class="form-control" name="name" required ng-model="timeSlotPopUpCtrl.selected.slot.contact.name" placeholder="Please enter your name"/>
+                <span class="time-slot-brand-error" ng-show="appointmentForm.name.$dirty && appointmentForm.name.$invalid">Name is required.</span>
+              </p>
+              <p class="form-group">
+                <label>Phone Number</label>
+                <input type="text" class="form-control" name="number" required ng-model="timeSlotPopUpCtrl.selected.slot.contact.number" placeholder="Please enter your phone number"/>
+                <span class="time-slot-brand-error" ng-show="appointmentForm.number.$dirty && appointmentForm.number.$invalid">Phone Number is required.</span>
+              </p>
+            </div>
+            <div class="modal-footer">
+              <button class="btn btn-primary" type="button" ng-disabled="appointmentForm.name.$invalid || appointmentForm.number.$invalid" ng-click="timeSlotPopUpCtrl.ok()">OK</button>
+              <button class="btn btn-warning" type="button" ng-click="timeSlotPopUpCtrl.cancel()">Cancel</button>
+            </div>
+          </div>
+        </form>
+      </script>
+      <!-- Modal content end -->
+      
+      <div class="page-header text-center">
+        <h1>Appointment Booking</h1>
+      </div>
+      <p class="text-center">What time would you like to meet?</p>
+      <div class="row times">
+        <div class="col-xs-2 text-center" ng-repeat="appointment in scheduleCtrl.appointments">
+          <h2>{{ appointment.name }}</h2>
+          <div class="time-slot" ng-repeat="slot in appointment.slots">
+            <input type="checkbox" id="{{ appointment.name }}-{{ $index }}" ng-model="slot.booked" />
+            <label for="{{ appointment.name }}-{{ $index }}" ng-click="$event.preventDefault();scheduleCtrl.onTimeSlotClick(appointment, slot);">{{ slot.time }}<br />
+              <span ng-if="slot.booked">Booked</span>
+              <span ng-if="!slot.booked">Available</span>
+            </label>
+          </div>
+        </div>
+      </div>
+      <p class="text-center">
+        <a href="#" ng-click="scheduleCtrl.reset()" class="btn btn-primary">Reset</a>
+      </p>
+    </div>
+  </body>
+
+</html>
